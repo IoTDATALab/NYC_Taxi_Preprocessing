@@ -1,7 +1,7 @@
 # Weber-Fechner Clustering (WFC) implementation based on Spark GraphX
-WFC-GraphX is a pure scala implementation based on ** Spark GraphX** of Weber-Fechner Clustering algorithm. 
+WFC-GraphX is a pure Scala implementation based on **Spark GraphX** of Weber-Fechner Clustering algorithm. 
 
-The version based on GraphLab is [**here**](https://github.com/IoTDATALab/WFC-GraphLab).
+The version based on Spark and GraphLab is [**here**](https://github.com/TaoWangXJTU/WFC-with-Spark-and-GraphLab).
 
 
 
