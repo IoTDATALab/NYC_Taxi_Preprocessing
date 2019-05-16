@@ -11,4 +11,4 @@ spark-submit --class com.iotdatalab.run.WFC_Job \
              --num-executors ${SPARK_NUM_EXECUTORS} \
              --executor-memory ${SPARK_EXECUTORS_MEMORY} \
              --executor-cores ${SPARK_EXECUTORS_CORES} \
-             WFC-GraphX.jar
+             WFC-Spark.jar
