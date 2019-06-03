@@ -229,22 +229,16 @@ class CodingFunctions extends Serializable {
     val bcFormatString = sc.broadcast(formatString)
 
     if (codeModel == "SD") {
-      val idAndCodeWithScale = sc.objectFile[(Int, String)](idAndCodePath)
-      val distinctCodesWithIds: RDD[(String, mutable.Iterable[Int])] =
-        distinctCodesAndIdsWithScale(idAndCodeWithScale.repartition(sc.defaultParallelism))
-      val codeAndTmpClass = distinctCodesWithIds.mapPartitions(iterator => iterator.map {
-        case (code, ids) => (code, code)
-      })
+      val idAndCodeWithScale: RDD[(Int, String)] = sc.objectFile[(Int, String)](idAndCodePath)
       val ccResult = codeAndCluster.mapPartitions(iterator => iterator.map {
-          case (code, cluster) => (bcFormatString.value.format((BigInt(code.toLong.toBinaryString))), cluster)
-        })
-      val allCodeAndCluster: RDD[(String, String)] = codeAndTmpClass.subtractByKey(ccResult).union(ccResult)
-      // Converting (code, cluster) to (PID, cluster)
-      val idAndCluster = allCodeAndCluster.partitionBy(distinctCodesWithIds.partitioner.get)
-        .join(distinctCodesWithIds).map(_._2)
-        .mapPartitions(iterator => iterator.flatMap {
-          case (cluster, idArray) => idArray.map(id => (id, cluster))
-        })
+        case (code, cluster) => (bcFormatString.value.format((BigInt(code.toLong.toBinaryString))), cluster)
+      })
+      val codeAndTmpCluster = distinctCodesAndPointsNumWithScale(idAndCodeWithScale).mapPartitions(iterator => iterator.map{
+        case (code, _) => (code, (-BigInt(code,2)).toString())
+      })
+      val allCodeAndCluster: RDD[(String, String)] = codeAndTmpCluster.subtractByKey(ccResult).union(ccResult)
+      val idAndCluster: RDD[(Int, String)] = idAndCodeWithScale.mapPartitions(iter => iter.map(_.swap))
+        .join(allCodeAndCluster).map(_._2)
       idAndCluster
     }
     else {
