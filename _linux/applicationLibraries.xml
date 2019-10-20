@@ -11,6 +11,11 @@
       <jarDirectory url="file:///usr/local/spark/jars" recursive="false" />
       <jarDirectory url="file:///usr/local/spark/jars" recursive="false" type="SOURCES" />
     </library>
+    <library name="Python 2.7 interpreter library">
+      <CLASSES />
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="scala-sdk-2.11.8" type="Scala">
       <properties>
         <compiler-classpath>
