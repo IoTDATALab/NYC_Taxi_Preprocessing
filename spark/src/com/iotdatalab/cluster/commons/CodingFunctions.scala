@@ -1,6 +1,5 @@
 package com.iotdatalab.cluster.commons
 
-import org.apache.spark.SparkContext
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
 import org.apache.spark.rdd.RDD
@@ -207,55 +206,45 @@ class CodingFunctions extends Serializable {
 
   /**
     * Decoding data
-    * @param sc Spark Context
+    * @param codeAndCluster Code and label pairs from Connected Component
     * @param dimensions Data dimensions
     * @param scale Weber Scale
     * @param codeModel Coding model
     * @param outputPath Output File Path
     * @return (item ID, Cluster ID) in this "scale"
     */
-  def decodeResults(sc: SparkContext,
+  def decodeResults(codeAndCluster: RDD[(String, String)],
                     dimensions: Int,
                     scale: Int,
                     codeModel: String,
                     outputPath: String): RDD[(Int, String)] = {
+    val sc = codeAndCluster.context
     // Temporary File Path
     val tmpFilePath = s"${outputPath}/tmp"
     // File path of pairs of item ID and code in specific scale
     val idAndCodePath = s"${tmpFilePath}/IdAndCode/${scale}"
-    // Path of Connected Components calculation results
-    val ccOutputPath = s"${tmpFilePath}/ConnectedComponents/${scale}"
 
     val length = dimensions * scale
     val formatString = s"%0${length}d"
     val bcFormatString = sc.broadcast(formatString)
-    val connectedComponents = sc.textFile(ccOutputPath, sc.defaultParallelism).filter(_ != s"__id,component_id")
-      .mapPartitions(iterator => iterator.map(s => {
-        val array= s.trim.split("(\\s+|,)")
-        (array(0),array(1))
-      }))
 
     if (codeModel == "SD") {
-      val idAndCodeWithScale = sc.objectFile[(Int, String)](idAndCodePath)
-      val distinctCodesWithIds: RDD[(String, mutable.Iterable[Int])] =
-        distinctCodesAndIdsWithScale(idAndCodeWithScale.repartition(sc.defaultParallelism))
-      val codeAndTmpClass = distinctCodesWithIds.mapPartitions(iterator => iterator.map {
-        case (code, ids) => (code, code)
+      val idAndCodeWithScale: RDD[(Int, String)] = sc.objectFile[(Int, String)](idAndCodePath)
+
+      val ccResult = codeAndCluster.mapPartitions(iterator => iterator.map {
+        case (code, cluster) => (bcFormatString.value.format((BigInt(code.toLong.toBinaryString))), cluster)
       })
-      val ccResult = connectedComponents.mapPartitions(iterator => iterator.map {
-          case (code, cluster) => (bcFormatString.value.format((BigInt(code.toLong.toBinaryString))), cluster)
-        })
-      val codeAndCluster: RDD[(String, String)] = codeAndTmpClass.subtractByKey(ccResult).union(ccResult)
-      // Converting (code, cluster) to (PID, cluster)
-      val idAndCluster = codeAndCluster.partitionBy(distinctCodesWithIds.partitioner.get)
-        .join(distinctCodesWithIds).map(_._2)
-        .mapPartitions(iterator => iterator.flatMap {
-          case (cluster, idArray) => idArray.map(id => (id, cluster))
-        })
+      val codeAndTmpCluster = distinctCodesAndPointsNumWithScale(idAndCodeWithScale).mapPartitions(iterator => iterator.map{
+        case (code, _) => (code, (-BigInt(code,2)).toString())
+      })
+      val allCodeAndCluster: RDD[(String, String)] = codeAndTmpCluster.subtractByKey(ccResult).union(ccResult)
+      val idAndCluster: RDD[(Int, String)] = idAndCodeWithScale.mapPartitions(iter => iter.map(_.swap))
+        .join(allCodeAndCluster).map(_._2)
+
       idAndCluster
     }
     else {
-      connectedComponents.mapPartitions(iterator => iterator.map { case (id, cluster) => (id.toLong.toInt, cluster) })
+      codeAndCluster.mapPartitions(iterator => iterator.map { case (id, cluster) => (id.toLong.toInt, cluster) })
     }
   }
 

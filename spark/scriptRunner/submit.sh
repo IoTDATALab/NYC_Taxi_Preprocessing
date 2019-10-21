@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 source environment.sh
-source parameters.sh
 
 spark-submit --class com.iotdatalab.run.WFC_Job \
              --master ${SPARK_MASTER} \
@@ -12,4 +11,4 @@ spark-submit --class com.iotdatalab.run.WFC_Job \
              --num-executors ${SPARK_NUM_EXECUTORS} \
              --executor-memory ${SPARK_EXECUTORS_MEMORY} \
              --executor-cores ${SPARK_EXECUTORS_CORES} \
-             WFC-GraphLab.jar
+             WFC-Spark.jar

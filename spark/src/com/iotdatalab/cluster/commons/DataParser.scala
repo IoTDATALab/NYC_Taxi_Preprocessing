@@ -1,7 +1,5 @@
 package com.iotdatalab.cluster.commons
 
-import java.io.{File, PrintWriter}
-
 import breeze.linalg._
 import org.apache.spark.mllib.linalg.{Vector, Vectors}
 import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
@@ -86,11 +84,7 @@ class DataParser extends Serializable {
     } else calMaxJaccardScale(dimensions, lambda)
 
     // Update real ending Weber scale
-    var realEndScale = updateEndScale(endScale,maxScale)
-    // Recording some parameters for GraphLab Connected Components and encoding.
-    val writer = new PrintWriter(new File("tmp"))
-    writer.write((codeModel + "," + maxScale.toString + "," + realEndScale.toString + "," + dimensions.toString))
-    writer.close()
+    val realEndScale = updateEndScale(endScale,maxScale)
 
     (vectorsRDD, dimensions, realEndScale)
   }
