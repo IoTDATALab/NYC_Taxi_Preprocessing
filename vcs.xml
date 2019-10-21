@@ -42,8 +42,12 @@
           <option name="url" value="https://github.com/IoTDATALab/WFC-python.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/IoTDATALab/WFC.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
-    <option name="cloneParentDir" value="$USER_HOME$/IdeaProjects/WFC-Python" />
+    <option name="cloneParentDir" value="$USER_HOME$/IdeaProjects/" />
   </component>
 </application>
