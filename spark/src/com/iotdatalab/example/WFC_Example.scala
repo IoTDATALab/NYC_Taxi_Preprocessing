@@ -1,4 +1,4 @@
-package com.iotdatalab.run
+package com.iotdatalab.example
 
 import com.iotdatalab.cluster.algorithm.WFC
 import org.apache.spark.rdd.RDD
@@ -19,14 +19,13 @@ object WFC_Example {
       .setAppName(s"Weber-Fechner clustering(lambda=$lambda) -> $destOut")
       .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
       .set("spark.executor.extraJavaOptions", "-XX:+UseG1GC")
-      .set("spark.shuffle.file.buffer", "64k")
-      .set("spark.reducer.maxSizeInFlight", "96m")
+
     val sc = new SparkContext(conf)
     /**
       * Optional parameters and settings:
       *     1. startScale: Setting encoding starting scale
       *     2. endScale: Setting encoding ending scale
-      *     3. codeModel: Setting encoding model. Setting SD for SD code, MIN for MinHash Code
+      *     3. codeModel: Setting encoding model. Setting "SD" for SD code, "MIN" for MinHash Code
       *     4. standardization: Standardized input data or not
       *     5. numHashTables and numBuckets: Setting MinHashLSH parameters
       */
