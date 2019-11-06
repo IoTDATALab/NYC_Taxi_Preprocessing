@@ -29,49 +29,6 @@ def main(inputdata, scale_num=-1, scale_lambda=1, alg_name='all_connected'):
 
 
 if __name__ == "__main__":
-    # #Flame
-    # originaldata_path = os.path.abspath('..') + '//originaldata//Flame.txt'
-    # outputdata_path = os.path.abspath('..') + '//outputdata//'
-    # data = np.loadtxt(originaldata_path,delimiter =',')
-    # data_num, dim_num = data.shape
-    # scale_num, scale_results=main(data, scale_num =-1, alg_name = 'mean-shift')
-    # for i_scale in range(0,scale_num):
-    # results = scale_results[i_scale]
-    # for i_class in set(list(results[:,0])):
-    # indexs = np.where(results==i_class)
-    # c=[np.random.random(),np.random.random(),np.random.random()];
-    # plt.scatter(data[indexs,0],data[indexs,1],color=c)
-    # plt.title('Flame scale:'+str(i_scale))
-    # plt.show()
-    # #Spiral
-    # originaldata_path = os.path.abspath('..') + '//originaldata//Spiral.csv'
-    # outputdata_path = os.path.abspath('..') + '//outputdata//'
-    # data = np.loadtxt(originaldata_path,delimiter =',')
-    # data_num, dim_num = data.shape
-    # scale_num, scale_results=main(data, scale_num =-1, alg_name = 'all_connected')
-    # for i_scale in range(0,scale_num):
-    # results = scale_results[i_scale]
-    # for i_class in set(list(results[:,0])):
-    # indexs = np.where(results==i_class)
-    # c=[np.random.random(),np.random.random(),np.random.random()];
-    # plt.scatter(data[indexs,0],data[indexs,1],color=c)
-    # plt.title('Flame scale:'+str(i_scale))
-    # plt.show()
-    # #Aggregation
-    # originaldata_path = os.path.abspath('..') + '//originaldata//Aggregation.txt'
-    # outputdata_path = os.path.abspath('..') + '//outputdata//'
-    # data = np.loadtxt(originaldata_path,delimiter =',')
-    # data_num, dim_num = data.shape
-    # scale_num, scale_results=main(data, scale_num =5, alg_name = 'mean-shift')
-    # for i_scale in range(0,scale_num):
-    # results = scale_results[i_scale]
-    # for i_class in set(list(results[:,0])):
-    # indexs = np.where(results==i_class)
-    # c=[np.random.random(),np.random.random(),np.random.random()];
-    # plt.scatter(data[indexs,0],data[indexs,1],color=c)
-    # plt.title('Flame scale:'+str(i_scale))
-    # plt.show()
-    # s3
     originaldata_path = os.path.abspath('..') + '//originaldata//s3.txt'
     outputdata_path = os.path.abspath('..') + '//outputdata//'
     data = np.loadtxt(originaldata_path, delimiter=',')
