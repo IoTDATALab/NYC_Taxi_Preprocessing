@@ -7,3 +7,6 @@
 *.iml
 out
 gen
+*.xml
+_linux
+codestyles
